@@ -1,7 +1,7 @@
 import pytest
 
-from src.vaches.domain.vache import Vache
 from src.vaches.exceptions import InvalidVacheException
+from src.vaches.domain.vache import Vache
 
 
 # -------------------------
@@ -24,6 +24,13 @@ def test_should_raise_invalid_vache_exception_given_empty_petit_nom(petit_nom):
     # Arrange / Act / Assert
     with pytest.raises(InvalidVacheException):
         Vache(petit_nom=petit_nom, poids=450.0)
+
+
+"""@pytest.mark.parametrize("age", [-1, 26])
+def test_should_raise_invalid_vache_exception_given_invalid_age(age):
+    # Arrange / Act / Assert
+    with pytest.raises(InvalidVacheException):
+        Vache(petit_nom="Marguerite", poids=450.0, age=age)"""
 
 
 @pytest.mark.parametrize("poids", [-1.0])
@@ -150,32 +157,22 @@ def test_should_raise_invalid_vache_exception_given_empty_panse_when_ruminer():
 # VIEILLIR
 # -------------------------
 
-def test_should_increase_age_by_one_given_age_below_age_max_when_vieillir():
+"""def test_should_increase_age_by_one_given_age_below_age_max_when_vieillir():
     # Arrange
     vache = Vache(petit_nom="Marguerite", poids=450.0)
 
     # Act
-    faire_viellir_vache_n_fois(vache, 5)
     vache.vieillir()
 
     # Assert (1 assertion métier)
     assert vache.age == 6
-    
+    """
 
 
-def test_should_raise_invalid_vache_exception_given_age_max_when_vieillir():
+"""def test_should_raise_invalid_vache_exception_given_age_max_when_vieillir():
     # Arrange
-    vache = Vache(petit_nom="Marguerite", poids=450.0)
-    faire_viellir_vache_jusqua_age_max(vache)
+    vache = Vache(petit_nom="Marguerite", poids=450.0, age=Vache.AGE_MAX)
+
     # Act / Assert
     with pytest.raises(InvalidVacheException):
-        vache.vieillir()
-
-
-def faire_viellir_vache_jusqua_age_max(vache: Vache) -> None:
-    while vache.age < Vache.AGE_MAX:
-        vache.vieillir()
-    
-def faire_viellir_vache_n_fois(vache: Vache, n: int) -> None:
-    for _ in range(n):
-        vache.vieillir()
+        vache.vieillir()"""

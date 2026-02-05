@@ -1,5 +1,5 @@
 from typing import Any
-from vaches.exceptions import InvalidVacheException
+from src.vaches.exceptions import InvalidVacheException
 
 
 class Vache:
@@ -10,14 +10,15 @@ class Vache:
     POIDS_MIN_PANSE: float = 2.0
     RENDEMENT_RUMINATION: float = 0.25
     _NEXT_ID: int = 1
+    _AGE_INITIAL: int = 0
 
-    def __init__(self, petit_nom: str, poids: float, age: int):
+    def __init__(self, petit_nom: str, poids: float):
         self._id = Vache._NEXT_ID
+        self._age = Vache._AGE_INITIAL
         Vache._NEXT_ID += 1
         self._petit_nom = petit_nom
         self._poids = poids
         self._panse = 0.0
-        self._age = age
         self._valider_etat()
 
     @property
