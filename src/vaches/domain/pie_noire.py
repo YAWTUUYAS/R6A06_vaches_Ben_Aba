@@ -22,6 +22,10 @@ class PieNoire(VacheALait):
         self._nb_taches_blanches = nb_taches_blanches
         self._nb_taches_noires = nb_taches_noires
         self._ration = {}
+        
+        # Injection de la stratégie
+        from src.vaches.strategies.pie_noire_milk import PieNoireMilk
+        self._rumination_strategy = PieNoireMilk()
 
     @property
     def nb_taches_blanches(self) -> int:
@@ -58,28 +62,6 @@ class PieNoire(VacheALait):
             if nourriture not in self._ration:
                 self._ration[nourriture] = 0.0
             self._ration[nourriture] += quantite
-
-    def ruminer(self) -> None:
-        panse_avant = self._panse
-        if self._ration:
-            facteur = sum(
-                quantite * self.COEFFICIENT_NUTRITIONNEL.get(type_nourriture, 1.0)
-                for type_nourriture, quantite in self._ration.items()
-            )
-            lait_produit = VacheALait.RENDEMENT_LAIT * facteur
-        else:
-            lait_produit = panse_avant * VacheALait.RENDEMENT_LAIT
-        if self._lait_disponible + lait_produit > self.PRODUCTION_LAIT_MAX:
-            raise InvalidVacheException("Production de lait depasserait le maximum autorise")
-        Vache.ruminer(self)
-        
-        self._lait_disponible += lait_produit
-        self._lait_total_produit += lait_produit
-        
-        self.post_rumination(panse_avant, lait_produit)
-
-    def post_rumination(self, panse_avant: float, lait: float) -> None:
-        self._ration = {}
 
     def __str__(self) -> str:
         lait_str = (

@@ -10,6 +10,10 @@ class VacheALait(Vache):
         self._lait_disponible = 0.0
         self._lait_total_produit = 0.0
         self._lait_total_traite = 0.0
+        
+        # Injection de la stratégie 
+        from src.vaches.strategies.standard_milk import StandardMilk
+        self._rumination_strategy = StandardMilk()
     
     @property
     def lait_disponible(self) -> float:
@@ -22,15 +26,6 @@ class VacheALait(Vache):
     @property
     def lait_total_traite(self) -> float:
         return self._lait_total_traite
-    
-    def ruminer(self) -> None:
-        panse_avant = self._panse
-        lait_produit = panse_avant * self.RENDEMENT_LAIT
-        if self._lait_disponible + lait_produit > self.PRODUCTION_LAIT_MAX:
-            raise InvalidVacheException("Production de lait depasserait le maximum autorise")
-        super().ruminer()
-        self._lait_disponible += lait_produit
-        self._lait_total_produit += lait_produit
     
     def traire(self, litres:float) -> float:
         if litres <= 0:

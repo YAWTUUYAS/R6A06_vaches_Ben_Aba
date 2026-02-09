@@ -20,6 +20,10 @@ class Vache:
         self._poids = poids
         self._panse = 0.0
         self._valider_etat()
+        
+        # Injection de la stratégie
+        from src.vaches.strategies.default_no_milk import DefaultNoMilk
+        self._rumination_strategy = DefaultNoMilk()
 
     @property
     def petitNom(self) -> str:
@@ -64,6 +68,11 @@ class Vache:
         gain = panse_avant * Vache.RENDEMENT_RUMINATION
         self._poids += gain
         self._panse = 0.0
+        
+        # Appeler la stratégie pour calculer et stocker le lait
+        lait_produit = self._rumination_strategy.calculer_lait(self, panse_avant)
+        self._rumination_strategy.stocker_lait(self, lait_produit)
+        self._rumination_strategy.post_rumination(self, panse_avant, lait_produit)
     
     def vieillir(self) -> None:
         if (self._age == Vache.AGE_MAX):
