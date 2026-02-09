@@ -1,6 +1,6 @@
-"""import pytest
+import pytest
 
-from src.vaches.exceptions import InvalidVacheException
+from src.vaches.domain.errors.exceptions import InvalidVacheException
 from src.vaches.domain.vache_a_lait import VacheALait
 
 
@@ -271,4 +271,4 @@ def test_should_reflect_milk_values_in_str_given_ruminer_and_traire():
 
     # Assert (1 assertion métier)
     assert "Lait total trait : 3.0 L" in s
-    """
+ 

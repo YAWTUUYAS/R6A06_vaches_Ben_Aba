@@ -1,5 +1,5 @@
 from typing import Any
-from src.vaches.exceptions import InvalidVacheException
+from src.vaches.domain.errors.exceptions import InvalidVacheException
 
 
 class Vache:
