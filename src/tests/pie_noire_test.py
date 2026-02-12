@@ -1,10 +1,12 @@
-"""import pytest
+import pytest
 
 from src.vaches.domain.errors.exceptions import InvalidVacheException
-from src.vaches.nourriture.TypeNourriture import TypeNourriture
 from src.vaches.domain.pie_noire import PieNoire
 from src.vaches.domain.vache import Vache
 from src.vaches.domain.vache_a_lait import VacheALait
+from src.vaches.nourriture.type_nourriture import TypeNourriture
+from src.vaches.strategies.protocols.rumination_strategy import RuminationStrategy
+
 
 
 @pytest.fixture
@@ -112,7 +114,7 @@ def test_should_accumulate_same_food_given_two_typed_brouter_calls(pie_ok: PieNo
 def test_should_fallback_to_vache_a_lait_calcul_given_empty_ration(pie_ok: PieNoire):
     # Arrange
     pie_ok.brouter(10.0)  # panse > 0, ration vide => super()._calculer_lait(panse_avant)
-    expected = VacheALait.RENDEMENT_LAIT * 10.0
+    expected = RuminationStrategy.RENDEMENT_LAIT * 10.0
 
     # Act
     pie_ok.ruminer()
@@ -128,10 +130,11 @@ def test_should_compute_specialized_lait_given_non_empty_ration(pie_ok: PieNoire
     pie_ok.brouter(1.0, TypeNourriture.CEREALES)
 
     facteur = (
-            2.0 * PieNoire.COEFFICIENT_NUTRITIONNEL[TypeNourriture.HERBE]
-            + 1.0 * PieNoire.COEFFICIENT_NUTRITIONNEL[TypeNourriture.CEREALES]
+            2.0 * RuminationStrategy.COEFFICIENT_NUTRITIONNEL[TypeNourriture.HERBE]
+            + RuminationStrategy.COEFFICIENT_NUTRITIONNEL[TypeNourriture.CEREALES]
+
     )
-    expected = VacheALait.RENDEMENT_LAIT * facteur
+    expected = RuminationStrategy.RENDEMENT_LAIT * facteur
 
     # Act
     pie_ok.ruminer()
@@ -175,4 +178,3 @@ def test_should_raise_invalid_vache_exception_given_panse_overflow_when_brouter(
     # Act / Assert
     with pytest.raises(InvalidVacheException):
         pie_ok.brouter(0.1)
-"""

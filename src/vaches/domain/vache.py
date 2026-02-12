@@ -61,9 +61,12 @@ class Vache:
         if nourriture is not None:
             raise InvalidVacheException("Brouter avec nourriture typée n'est pas autorisé")
     
-    def ruminer(self) -> None:
+    def valider_rumination_possible(self) -> None:
         if self._panse <= 0:
             raise InvalidVacheException("La panse est vide, rien a ruminer")
+
+    def ruminer(self) -> None:
+        self.valider_rumination_possible()
         panse_avant = self._panse
         gain = panse_avant * Vache.RENDEMENT_RUMINATION
         self._poids += gain

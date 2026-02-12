@@ -2,17 +2,11 @@ from typing import Optional
 from src.vaches.domain.vache import Vache
 from src.vaches.domain.vache_a_lait import VacheALait
 from src.vaches.domain.errors.exceptions import InvalidVacheException
-from src.vaches.nourriture.TypeNourriture import TypeNourriture
-
+from src.vaches.nourriture.type_nourriture import TypeNourriture
+from src.vaches.strategies.pie_noire_milk import PieNoireMilk
 
 class PieNoire(VacheALait):
-    COEFFICIENT_NUTRITIONNEL = {
-        TypeNourriture.HERBE: 1.0,
-        TypeNourriture.FOIN: 0.8,
-        TypeNourriture.CEREALES: 1.2,
-        TypeNourriture.PAILLE: 0.5,
-        TypeNourriture.MARGUERITE: 1.1,
-    }
+    
 
     def __init__(self, petit_nom: str, poids: float, nb_taches_blanches: int = 0, nb_taches_noires: int = 0):
         self._valider_taches(nb_taches_blanches, nb_taches_noires)
@@ -24,7 +18,7 @@ class PieNoire(VacheALait):
         self._ration = {}
         
         # Injection de la stratégie
-        from src.vaches.strategies.pie_noire_milk import PieNoireMilk
+        
         self._rumination_strategy = PieNoireMilk()
 
     @property
