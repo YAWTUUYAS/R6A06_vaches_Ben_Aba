@@ -1,6 +1,6 @@
 from typing import Any
 from src.vaches.domain.errors.exceptions import InvalidVacheException
-
+from src.vaches.strategies.default_no_milk import DefaultNoMilk
 
 class Vache:
 
@@ -22,7 +22,7 @@ class Vache:
         self._valider_etat()
         
         # Injection de la stratégie
-        from src.vaches.strategies.default_no_milk import DefaultNoMilk
+        
         self._rumination_strategy = DefaultNoMilk()
 
     @property
@@ -78,3 +78,6 @@ class Vache:
         if (self._age == Vache.AGE_MAX):
             raise InvalidVacheException("ne peut pas vieillir si age maximal atteint")
         self._age +=1
+
+    def __str__(self) -> str:
+        return f"Vache {self._petit_nom}"

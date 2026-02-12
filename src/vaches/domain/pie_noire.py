@@ -64,14 +64,9 @@ class PieNoire(VacheALait):
             self._ration[nourriture] += quantite
 
     def __str__(self) -> str:
-        lait_str = (
-            f"Lait disponible : {self._lait_disponible:.1f} L\n"
-            f"Lait total produit : {self._lait_total_produit:.1f} L\n"
-            f"Lait total trait : {self._lait_total_traite:.1f} L"
-        )
+        super().__str__()
         return (
             f"{self._petit_nom} (poids: {self._poids:.1f} kg, age: {self._age}, panse: {self._panse:.1f})\n"
             f"Taches blanches: {self._nb_taches_blanches}, Taches noires: {self._nb_taches_noires}\n"
-            f"{lait_str}"
         )
 

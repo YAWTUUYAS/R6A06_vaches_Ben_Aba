@@ -1,9 +1,8 @@
 from src.vaches.domain.vache import Vache
 from src.vaches.domain.errors.exceptions import InvalidVacheException
+from src.vaches.strategies.standard_milk import StandardMilk
 
 class VacheALait(Vache):
-    RENDEMENT_LAIT:float = 1.1
-    PRODUCTION_LAIT_MAX:float = 40.0
 
     def __init__(self, petit_nom:str, poids:float):
         super().__init__(petit_nom, poids)
@@ -11,8 +10,7 @@ class VacheALait(Vache):
         self._lait_total_produit = 0.0
         self._lait_total_traite = 0.0
         
-        # Injection de la stratégie 
-        from src.vaches.strategies.standard_milk import StandardMilk
+        # Injection de la stratégie
         self._rumination_strategy = StandardMilk()
     
     @property
@@ -37,7 +35,7 @@ class VacheALait(Vache):
         return litres
     
     def __str__(self) -> str:
-        parent_str = super().__str__() if hasattr(super(), '__str__') else f"Vache {self._petit_nom}"
+        super().__str__()
         return (
             f"{self._petit_nom} (poids: {self._poids:.1f} kg, age: {self._age}, panse: {self._panse:.1f})\n"
             f"Lait disponible : {self._lait_disponible:.1f} L\n"

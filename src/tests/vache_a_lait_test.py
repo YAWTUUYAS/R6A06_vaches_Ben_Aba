@@ -2,6 +2,7 @@ import pytest
 
 from src.vaches.domain.errors.exceptions import InvalidVacheException
 from src.vaches.domain.vache_a_lait import VacheALait
+from vaches.strategies.protocols.rumination_strategy import RuminationStrategy
 
 
 # -------------------------
@@ -25,7 +26,7 @@ def test_should_increase_lait_disponible_given_positive_panse_when_ruminer():
     vache.ruminer()
 
     # Assert (1 assertion métier)
-    assert vache.lait_disponible == pytest.approx(VacheALait.RENDEMENT_LAIT * 10.0)
+    assert vache.lait_disponible == pytest.approx(RuminationStrategy.RENDEMENT_LAIT * 10.0)
 
 
 def test_should_increase_lait_total_produit_given_positive_panse_when_ruminer():
@@ -36,7 +37,7 @@ def test_should_increase_lait_total_produit_given_positive_panse_when_ruminer():
     # Act
     vache.ruminer()
     actual = vache.lait_total_produit
-    expected = VacheALait.RENDEMENT_LAIT * 10.0
+    expected = RuminationStrategy.RENDEMENT_LAIT * 10.0
 
     # Assert (1 assertion métier)
     assert actual == pytest.approx(expected)
@@ -50,7 +51,7 @@ def test_should_return_lait_produced_given_positive_panse_when_ruminer():
     # Act
     vache.ruminer()
     actual = vache.lait_total_produit
-    expected = VacheALait.RENDEMENT_LAIT * 10.0
+    expected = RuminationStrategy.RENDEMENT_LAIT * 10.0
 
     # Assert (1 assertion métier)
     assert actual == pytest.approx(expected)
@@ -78,7 +79,7 @@ def test_should_accumulate_lait_disponible_given_two_ruminations():
 
     # Assert (1 assertion métier)
 
-    assert vache.lait_disponible == pytest.approx(VacheALait.RENDEMENT_LAIT * (10.0 + 4.0))
+    assert vache.lait_disponible == pytest.approx(RuminationStrategy.RENDEMENT_LAIT * (10.0 + 4.0))
 
 
 # -------------------------
@@ -95,7 +96,7 @@ def test_should_decrease_lait_disponible_given_valid_litres_when_traire():
     vache.traire(3.0)
 
     # Assert (1 assertion métier)
-    assert vache.lait_disponible == pytest.approx((VacheALait.RENDEMENT_LAIT * 10.0) - 3.0)
+    assert vache.lait_disponible == pytest.approx((RuminationStrategy.RENDEMENT_LAIT * 10.0) - 3.0)
 
 
 def test_should_return_litres_given_valid_litres_when_traire():
@@ -181,12 +182,12 @@ def test_should_raise_invalid_vache_exception_given_typed_food_when_brouter_on_v
 def _produire_lait_jusqua(vache: VacheALait, cible_lait: float) -> None:
     if cible_lait < 0:
         raise ValueError("cible_lait doit être >= 0")
-    if cible_lait > VacheALait.PRODUCTION_LAIT_MAX:
+    if cible_lait > RuminationStrategy.PRODUCTION_LAIT_MAX:
         raise ValueError("cible_lait ne doit pas dépasser PRODUCTION_LAIT_MAX")
 
     while vache.lait_disponible < cible_lait:
         restant = cible_lait - vache.lait_disponible
-        panse_necessaire = restant / VacheALait.RENDEMENT_LAIT
+        panse_necessaire = restant / RuminationStrategy.RENDEMENT_LAIT
         quantite = min(panse_necessaire, vache.PANSE_MAX)
 
         vache.brouter(quantite)
@@ -199,24 +200,24 @@ def _produire_lait_jusqua(vache: VacheALait, cible_lait: float) -> None:
 def test_should_allow_ruminer_given_lait_production_reaches_production_max_exactly():
     # Arrange
     vache = VacheALait(petit_nom="Lola", poids=500.0)
-    _produire_lait_jusqua(vache, VacheALait.PRODUCTION_LAIT_MAX - 1.0)
+    _produire_lait_jusqua(vache, RuminationStrategy.PRODUCTION_LAIT_MAX - 1.0)
 
     # Act
-    panse = 1.0 / VacheALait.RENDEMENT_LAIT
+    panse = 1.0 / RuminationStrategy.RENDEMENT_LAIT
     vache.brouter(panse)
     vache.ruminer()
 
     # Assert (1 assertion métier)
-    assert vache.lait_disponible == pytest.approx(VacheALait.PRODUCTION_LAIT_MAX)
+    assert vache.lait_disponible == pytest.approx(RuminationStrategy.PRODUCTION_LAIT_MAX)
 
 
 def test_should_raise_invalid_vache_exception_given_lait_production_exceeds_production_max_when_ruminer():
     # Arrange
     vache = VacheALait(petit_nom="Lola", poids=500.0)
-    _produire_lait_jusqua(vache, VacheALait.PRODUCTION_LAIT_MAX - 0.5)
+    _produire_lait_jusqua(vache, RuminationStrategy.PRODUCTION_LAIT_MAX - 0.5)
 
     # Act / Assert
-    panse = 1.0 / VacheALait.RENDEMENT_LAIT
+    panse = 1.0 / RuminationStrategy.RENDEMENT_LAIT
     vache.brouter(panse)
 
     with pytest.raises(InvalidVacheException):
@@ -226,22 +227,22 @@ def test_should_raise_invalid_vache_exception_given_lait_production_exceeds_prod
 def test_should_allow_ruminer_again_given_traite_frees_capacity_below_production_max():
     # Arrange
     vache = VacheALait(petit_nom="Lola", poids=500.0)
-    _produire_lait_jusqua(vache, VacheALait.PRODUCTION_LAIT_MAX)
+    _produire_lait_jusqua(vache, RuminationStrategy.PRODUCTION_LAIT_MAX)
     vache.traire(10.0)
 
     # Act
-    panse = 10.0 / VacheALait.RENDEMENT_LAIT
+    panse = 10.0 / RuminationStrategy.RENDEMENT_LAIT
     vache.brouter(panse)
     vache.ruminer()
 
     # Assert (1 assertion métier)
-    assert vache.lait_disponible == pytest.approx(VacheALait.PRODUCTION_LAIT_MAX)
+    assert vache.lait_disponible == pytest.approx(RuminationStrategy.PRODUCTION_LAIT_MAX)
 
 
 def test_should_raise_invalid_vache_exception_given_production_max_reached_when_ruminer():
     # Arrange
     vache = VacheALait(petit_nom="Lola", poids=500.0)
-    _produire_lait_jusqua(vache, VacheALait.PRODUCTION_LAIT_MAX)
+    _produire_lait_jusqua(vache, RuminationStrategy.PRODUCTION_LAIT_MAX)
 
     # Act / Assert
     vache.brouter(0.1)
